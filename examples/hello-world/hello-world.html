@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Hello World</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="../../src/jquery.glue.js"></script>
+    <script src="hello-world.js"></script>
+    <link href="hello-world.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="form">
+            <label>First name:</label>
+            <input type="text" data-prop="firstName" />
+            <br />
+            <br />
+            <label>Last Name:</label>
+            <input type="text" data-prop="lastName" />
+            <h3 data-show="hasName">Hello <span data-prop="fullName"></span>!</h3>
+        </div>
+
+    </div>
+
+    <script>
+        $('.form').glue(new Form());
+    </script>
+
+</body>
+</html>

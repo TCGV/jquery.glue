@@ -174,7 +174,7 @@
                 el.value = val;
             }
         } else {
-            el.innerText = val;
+            el.innerHTML = val;
         }
     }
 

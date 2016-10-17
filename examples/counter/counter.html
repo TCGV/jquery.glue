@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Counter</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="../../src/jquery.glue.js"></script>
+    <script src="counter.js"></script>
+    <link href="counter.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="counter">
+            <span>Press the button to increment the counter:</span>
+            <button data-action="increment">increment</button>
+            <h4>Counter value: <span data-prop="count"></span></h4>
+        </div>
+
+    </div>
+
+    <script>
+        $('.counter').glue(new Counter());
+    </script>
+
+</body>
+</html>
