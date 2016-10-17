@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Questions</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="../../src/jquery.glue.js"></script>
+    <script src="questions.js"></script>
+    <link href="questions.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="q1" class="question">
+            <h4>1) How likely is it that you would recommend <i>jquery.glue</i> to a friend or colleague?</h4>
+            <ul>
+                <li>
+                    <input name="q1" type="radio" data-prop="radios.0" />
+                    <label data-prop="labels.0">1 (Would NOT reccommend)</label>
+                </li>
+                <li>
+                    <input name="q1" type="radio" data-prop="radios.1" />
+                    <label data-prop="labels.1">2</label>
+                </li>
+                <li>
+                    <input name="q1" type="radio" data-prop="radios.2" />
+                    <label data-prop="labels.2">3 (Indiferent)</label>
+                </li>
+                <li>
+                    <input name="q1" type="radio" data-prop="radios.3" />
+                    <label data-prop="labels.3">4</label>
+                </li>
+                <li>
+                    <input name="q1" type="radio" data-prop="radios.4" />
+                    <label data-prop="labels.4">5 (Would DEFINITELY reccommend)</label>
+                </li>
+            </ul>
+        </div>
+
+        <div id="q2" class="question">
+            <h4>2) Please select your areas of expertise:</h4>
+            <ul>
+                <li>
+                    <input type="checkbox" data-prop="checkboxes.0" />
+                    <label data-prop="labels.0">Web design</label>
+                </li>
+                <li>
+                    <input type="checkbox" data-prop="checkboxes.1" />
+                    <label data-prop="labels.1">Web development</label>
+                </li>
+                <li>
+                    <input type="checkbox" data-prop="checkboxes.2" />
+                    <label data-prop="labels.2">Backend development</label>
+                </li>
+                <li>
+                    <input type="checkbox" data-prop="checkboxes.3" />
+                    <label data-prop="labels.3">Database administration</label>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="container">
+
+        <div class="result" data-ref-question="q1">
+            <h4>Your answer to the first question was:</h4>
+            <br />
+            <span data-prop="answer"></span>
+        </div>
+
+        <div class="result" data-ref-question="q2">
+            <h4>Your answer to the second question was:</h4>
+            <br />
+            <span data-prop="answer"></span>
+        </div>
+
+    </div>
+
+    <script>
+        $('.question').each(function (i, v) {
+            $(v).glue(new Question());
+        });
+
+        $('.result').each(function (i, v) {
+            $(v).glue(new Result());
+        });
+    </script>
+
+</body>
+</html>

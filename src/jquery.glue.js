@@ -78,7 +78,7 @@
 
                 (function bindProperty(obj) {
 
-                    var onChange = obj.onChange;
+                    var root = obj;
                     var fullProp = $(el).attr('data-prop');
                     var lastValue = null;
 
@@ -88,9 +88,10 @@
 
                     if (obj != undefined) {
 
-                        var _value = obj[prop];
-                        lastValue = _value;
-                        setValue(el, _value);
+                        var v = obj[prop];
+                        v = v != undefined ? v : getValue(el);
+                        lastValue = getValue(el);
+                        setValue(el, v);
 
                         addEvent(el, 'change', change);
                         addEvent(el, 'keypress', change);
@@ -98,19 +99,19 @@
 
                         defineProperty(obj, prop, {
                             get: function () {
-                                return _value;
+                                return isRadio(el) ? getValue(el) : v;
                             }, set: function (val) {
-                                _value = val;
+                                v = val;
                                 setValue(el, val);
                             }
                         });
                     }
 
                     function change() {
-                        obj[prop] = el.value;
-                        if (onChange != null && el.value != lastValue) {
-                            onChange(fullProp, el.value, lastValue);
-                            lastValue = el.value;
+                        obj[prop] = getValue(el);
+                        if (root.onChange != null && (getValue(el) != lastValue || isRadio(el))) {
+                            root.onChange(fullProp, getValue(el), lastValue && !isRadio(el));
+                            lastValue = getValue(el);
                         }
                     }
 
@@ -168,14 +169,34 @@
         }
     }
 
+    function getValue(el) {
+        if (isCheckbox(el) || isRadio(el)) {
+            return el.checked;
+        } else if (el.value != undefined && el.tagName != 'LI') {
+            return el.value;
+        } else {
+            return el.innerHTML;
+        }
+    }
+
     function setValue(el, val) {
-        if (el.value != undefined && el.tagName != 'LI') {
+        if (isCheckbox(el) || isRadio(el)) {
+            el.checked = val;
+        } else if (el.value != undefined && el.tagName != 'LI') {
             if (el.value != val) {
                 el.value = val;
             }
         } else {
             el.innerHTML = val;
         }
+    }
+
+    function isRadio(el) {
+        return el.tagName == 'INPUT' && el.type == 'radio';
+    }
+
+    function isCheckbox(el) {
+        return el.tagName == 'INPUT' && el.type == 'checkbox';
     }
 
     // ES 15.2.3.6 Object.defineProperty ( O, P, Attributes )

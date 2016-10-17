@@ -1,0 +1,17 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    max-width: 640px;
+    margin: 40px auto;
+}
+
+    .container div {
+        background-color: #eee;
+        padding: 20px;
+    }
+
+    .container ul li {
+        list-style: none;
+    }
