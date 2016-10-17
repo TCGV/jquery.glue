@@ -123,7 +123,6 @@
         this.clone = function () {
             var item = new ToDoItem();
             item.description = self.description;
-            item.dueDate = self.dueDate;
             item.done = self.done;
             return item;
         };
