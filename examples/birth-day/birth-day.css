@@ -1,0 +1,17 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.birth-select {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+    .birth-select .valid {
+        color: green;
+    }
+
+    .birth-select .invalid {
+        color: red;
+    }

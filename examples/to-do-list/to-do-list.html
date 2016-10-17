@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>To Do List</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="../../src/jquery.glue.js"></script>
+    <script src="to-do-list.js"></script>
+    <link href="to-do-list.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="list" class="toDoList" data-ref-form="form">
+
+        <button data-action="newItem">add</button>
+        <h3>You have <span data-prop="length"></span> items in you list, of which <span data-prop="pending"></span> are pending</h3>
+
+        <div id="form" class="toDoForm" style="display: none" data-ref="list" data-child>
+            <div class="buttons">
+                <button data-action="cancel">cancel</button>
+                <button data-action="confirm" data-el="confirmBtn">confirm</button>
+            </div>
+            <div class="text">
+                <input type="text" data-prop="item.description" data-el="textArea" />
+            </div>
+        </div>
+
+        <div class="toDoItems" data-el="container">
+            <div style="display: none">
+                <div class="toDoItem" data-el="template" data-ref-list="list" data-child>
+                    <button data-action="remove">remove</button>
+                    <button data-action="setDone" data-el="doneBtn">done</button>
+                    <span data-prop="description">Turn off the oven</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#list').glue(new ToDoList());
+        $('#form').glue(new ToDoForm());
+    </script>
+
+</body>
+</html>

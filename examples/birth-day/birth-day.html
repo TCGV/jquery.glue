@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Birth Day</title>
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="../../src/jquery.glue.js"></script>
+    <script src="birth-day.js"></script>
+    <link href="birth-day.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="birth-select">
+
+        <label>Please select your birth date:</label>
+        <select data-prop="day" data-el="daySel"></select>
+        <select data-prop="month" data-el="monthSel"></select>
+        <select data-prop="year" data-el="yearSel"></select>
+
+        <h3 class="valid" data-show="hasDate">You were born on <span data-prop="dateString">xx xxx xxxx</span></h3>
+        <h3 class="invalid" data-hide="hasDate">No valid date selected</h3>
+
+    </div>
+
+    <script>
+        $('.birth-select').glue(new BirthSelector());
+    </script>
+
+</body>
+</html>

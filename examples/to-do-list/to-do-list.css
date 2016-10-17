@@ -1,0 +1,50 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.toDoList {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ddd;
+}
+
+    .toDoList h3 {
+        margin-top: 0;
+    }
+
+.toDoForm {
+    padding: 10px;
+    overflow: hidden;
+    background-color: honeydew;
+    margin-bottom: 10px;
+}
+
+    .toDoForm .buttons {
+        overflow: hidden;
+        float: right;
+        width: 125px;
+    }
+
+    .toDoForm .text {
+        overflow: hidden;
+        position: relative;
+    }
+
+        .toDoForm .text input {
+            width: 98%;
+        }
+
+.toDoItem {
+    overflow: hidden;
+    background: lightyellow;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+    .toDoList button,
+    .toDoForm button,
+    .toDoItem button {
+        float: right;
+        margin-left: 5px;
+    }
