@@ -37,7 +37,7 @@ And define behavior through user-defined object types:
             self.hasName = false;
         };
 
-        // listen to changes is bound properties values
+        // listen to changes in bound properties values
         this.onChange = function (prop, newValue, oldValue) {
             self.hasName = self.firstName != '' || self.lastName != '';
             self.fullName = (self.firstName + ' ' + self.lastName).trim();
