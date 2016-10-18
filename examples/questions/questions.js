@@ -4,21 +4,14 @@
 
         var self = this;
         this.labels = [];
-        this.radios = [];
-        this.checkboxes = [];
+        this.options = [];
 
         this.getAnswer = function () {
 
             var ans = '';
 
-            for (var i = 0; i < self.radios.length; i++) {
-                if (self.radios[i]) {
-                    ans += self.labels[i] + '; ';
-                }
-            }
-
-            for (var i = 0; i < self.checkboxes.length; i++) {
-                if (self.checkboxes[i]) {
+            for (var i = 0; i < self.options.length; i++) {
+                if (self.options[i]) {
                     ans += self.labels[i] + '; ';
                 }
             }
