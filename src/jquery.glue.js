@@ -90,8 +90,8 @@
 
                         var v = obj[prop];
                         v = v != undefined ? v : getValue(el);
-                        lastValue = getValue(el);
                         setValue(el, v);
+                        lastValue = v;
 
                         addEvent(el, 'change', change);
                         addEvent(el, 'keypress', change);
