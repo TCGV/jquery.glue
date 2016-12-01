@@ -11,6 +11,7 @@
 
         this.increment = function () {
             self.count++;
+            self.counterEl.css('border', self.count + 'px solid black');
         };
     };
 

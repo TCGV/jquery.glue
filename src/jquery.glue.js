@@ -2,6 +2,10 @@
 
     var map = [];
 
+    $.fn.findBack = function (selector) {
+        return $(this).find(selector).addBack(selector);
+    };
+
     $.fn.glue = function (obj) {
 
         map[$(this).attr('id')] = obj;
@@ -26,7 +30,7 @@
                 });
             });
 
-            $(this).find('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
+            $(this).findBack('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
 
                 (function bindElement(obj) {
                     var elm = $(el).attr('data-el').split('.');
@@ -36,7 +40,7 @@
 
             });
 
-            $(this).find('[data-action]').not($(this).find('[data-child] [data-action]')).each(function (i, el) {
+            $(this).findBack('[data-action]').not($(this).find('[data-child] [data-action]')).each(function (i, el) {
 
                 (function bindAction(obj) {
                     var act = $(el).attr('data-action').split('.');
@@ -49,7 +53,7 @@
 
             });
 
-            $(this).find('[data-show],[data-hide]').not($(this).find('[data-child] [data-show],[data-child] [data-hide]')).each(function (i, el) {
+            $(this).findBack('[data-show],[data-hide]').not($(this).find('[data-child] [data-show],[data-child] [data-hide]')).each(function (i, el) {
 
                 (function bindVisibility(obj) {
 
@@ -74,7 +78,7 @@
 
             });
 
-            $(this).find('[data-prop]').not($(this).find('[data-child] [data-prop]')).each(function (i, el) {
+            $(this).findBack('[data-prop]').not($(this).find('[data-child] [data-prop]')).each(function (i, el) {
 
                 (function bindProperty(obj) {
 
