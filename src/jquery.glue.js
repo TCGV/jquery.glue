@@ -85,7 +85,7 @@
 
             for (var key in attrs) {
                 var name = attrs[key];
-                var exp = 'data-attr-' + name;
+                var exp = 'data-' + name;
                 $(this).findBack('[' + exp + ']').not($(this).find('[data-child] [' + exp + ']')).each(function (i, el) {
                     bindAttr(el, obj, exp, name);
                 });

@@ -6,12 +6,12 @@
         var index = 0;
 
         var self = this;
-        this.src = imgs[0];
+        this.url = imgs[0];
 
         this.__init = function () {
             setInterval(function () {
                 index = (index + 1) % imgs.length;
-                self.src = imgs[index];
+                self.url = imgs[index];
             }, 1000);
         };
 
