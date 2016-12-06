@@ -1,0 +1,14 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+    max-width: 640px;
+    margin: 40px auto;
+}
+
+    .container div {
+        background-color: #ddd;
+        padding: 20px;
+        text-align: center;
+    }

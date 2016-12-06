@@ -1,6 +1,7 @@
 (function ($) {
 
     var map = [];
+    var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
     $.fn.findBack = function (selector) {
         return $(this).find(selector).addBack(selector);
@@ -79,49 +80,16 @@
             });
 
             $(this).findBack('[data-prop]').not($(this).find('[data-child] [data-prop]')).each(function (i, el) {
-
-                (function bindProperty(obj) {
-
-                    var root = obj;
-                    var fullProp = $(el).attr('data-prop');
-                    var lastValue = null;
-
-                    var prop = fullProp.split('.');
-                    obj = getObject(obj, prop);
-                    prop = prop[prop.length - 1];
-
-                    if (obj != undefined) {
-
-                        var v = obj[prop];
-                        v = v != undefined ? v : getValue(el);
-                        setValue(el, v);
-                        lastValue = v;
-
-                        addEvent(el, 'change', change);
-                        addEvent(el, 'keypress', change);
-                        addEvent(el, 'keyup', change);
-
-                        defineProperty(obj, prop, {
-                            get: function () {
-                                return isRadio(el) ? getValue(el) : v;
-                            }, set: function (val) {
-                                v = val;
-                                setValue(el, val);
-                            }
-                        });
-                    }
-
-                    function change() {
-                        obj[prop] = getValue(el);
-                        if (root.onChange != null && (getValue(el) != lastValue || isRadio(el))) {
-                            root.onChange(fullProp, getValue(el), lastValue && !isRadio(el));
-                            lastValue = getValue(el);
-                        }
-                    }
-
-                })(obj);
-
+                bindObject(el, obj, 'data-prop', getValue, setValue);
             });
+
+            for (var key in attrs) {
+                var name = attrs[key];
+                var exp = 'data-attr-' + name;
+                $(this).findBack('[' + exp + ']').not($(this).find('[data-child] [' + exp + ']')).each(function (i, el) {
+                    bindAttr(el, obj, exp, name);
+                });
+            }
 
         });
 
@@ -131,6 +99,49 @@
 
         return a;
     };
+
+    function bindAttr(el, obj, exp, name) {
+        bindObject(el, obj, exp, function (el) { getAttr(el, name); }, function (el, val) { setAttr(el, name, val); });
+    }
+
+    function bindObject(el, obj, exp, getter, settter) {
+        var root = obj;
+        var fullProp = $(el).attr(exp);
+        var lastValue = null;
+
+        var prop = fullProp.split('.');
+        obj = getObject(obj, prop);
+        prop = prop[prop.length - 1];
+
+        if (obj != undefined) {
+
+            var v = obj[prop];
+            v = v != undefined ? v : getter(el);
+            settter(el, v);
+            lastValue = v;
+
+            addEvent(el, 'change', change);
+            addEvent(el, 'keypress', change);
+            addEvent(el, 'keyup', change);
+
+            defineProperty(obj, prop, {
+                get: function () {
+                    return isRadio(el) ? getter(el) : v;
+                }, set: function (val) {
+                    v = val;
+                    settter(el, val);
+                }
+            });
+        }
+
+        function change() {
+            obj[prop] = getter(el);
+            if (root.onChange != null && (getter(el) != lastValue || isRadio(el))) {
+                root.onChange(fullProp, getter(el), lastValue && !isRadio(el));
+                lastValue = getter(el);
+            }
+        }
+    }
 
     function getObject(obj, prop) {
         for (var i = 0; i < prop.length - 1; i++) {
@@ -193,6 +204,14 @@
         } else {
             el.innerHTML = val;
         }
+    }
+
+    function getAttr(el, name) {
+        return el.getAttribute(name);
+    }
+
+    function setAttr(el, name, val) {
+        el.setAttribute(name, val);
     }
 
     function isRadio(el) {
