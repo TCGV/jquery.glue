@@ -83,8 +83,8 @@
                 bindObject(el, obj, 'data-prop', getValue, setValue);
             });
 
-            for (var key in attrs) {
-                var name = attrs[key];
+            for (var x = 0; x < attrs.length; x++) {
+                var name = attrs[x];
                 var exp = 'data-' + name;
                 $(this).findBack('[' + exp + ']').not($(this).find('[data-child] [' + exp + ']')).each(function (i, el) {
                     bindAttr(el, obj, exp, name);
