@@ -34,9 +34,15 @@
             $(this).findBack('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
 
                 (function bindElement(obj) {
-                    var elm = $(el).attr('data-el').split('.');
-                    elm = elm[elm.length - 1];
-                    obj[elm] = (obj[elm] || $()).add(el);
+                    var split = $(el).attr('data-el').split('.');
+                    var key = split[0];
+                    var index = split[1];
+                    if (index == null) {
+                        obj[key] = $(el);
+                    } else {
+                        obj[key] = (obj[key] || []);
+                        obj[key][index] = $(el);
+                    }
                 })(obj);
 
             });
