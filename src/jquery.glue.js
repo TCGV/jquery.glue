@@ -108,6 +108,7 @@
 
     function bindAttr(el, obj, exp, name) {
         var root = obj;
+        var fullProp = $(el).attr(exp);
 
         bindObject(el, obj, exp, function (el) { getAttr(el, name); }, function (el, val) { setAttr(el, name, val); });
         if (el.tagName == 'IMG') {
@@ -116,7 +117,7 @@
 
         function load() {
             if (root.onLoad != null) {
-                root.onLoad(exp, el);
+                root.onLoad(fullProp, getAttr(el, name));
             }
         }
     }

@@ -7,12 +7,17 @@
 
         var self = this;
         this.url = imgs[0];
+        this.cureent = null;
 
         this.__init = function () {
             setInterval(function () {
                 index = (index + 1) % imgs.length;
                 self.url = imgs[index];
             }, 1000);
+        };
+
+        this.onLoad = function (prop, value) {
+            self.current = value;
         };
 
     };
