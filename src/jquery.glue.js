@@ -107,7 +107,18 @@
     };
 
     function bindAttr(el, obj, exp, name) {
+        var root = obj;
+
         bindObject(el, obj, exp, function (el) { getAttr(el, name); }, function (el, val) { setAttr(el, name, val); });
+        if (el.tagName == 'IMG') {
+            addEvent(el, 'load', load);
+        }
+
+        function load() {
+            if (root.onLoad != null) {
+                root.onLoad(exp, el);
+            }
+        }
     }
 
     function bindObject(el, obj, exp, getter, settter) {
