@@ -195,11 +195,7 @@
     }
 
     function addEvent(el, eventName, eventHandler) {
-        if (el.addEventListener) {
-            el.addEventListener(eventName, eventHandler);
-        } else if (el.attachEvent) {
-            el.attachEvent('on' + eventName, eventHandler);
-        }
+        $(el).on(eventName, eventHandler);
     }
 
     function getValue(el) {
