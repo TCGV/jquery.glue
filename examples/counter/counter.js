@@ -7,7 +7,7 @@
 
         this.__init = function () {
             self.count = 0;
-        }
+        };
 
         this.increment = function () {
             self.count++;

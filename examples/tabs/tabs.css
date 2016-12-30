@@ -1,0 +1,37 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.left {
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.container {
+    max-width: 640px;
+    margin: 40px auto;
+}
+
+    .container button {
+        background-color: white;
+        padding: 5px 20px;
+        margin-bottom: 5px;
+    }
+
+        .container button.active {
+            color: darkorange;
+            border-color: darkorange;
+            font-weight: bold;
+        }
+
+    .container .body {
+        background-color: #ddd;
+        padding: 20px;
+    }

@@ -1,6 +1,7 @@
 (function ($) {
 
-    var map = [];
+    var keys = [];
+    var vals = [];
     var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
     $.fn.findBack = function (selector) {
@@ -9,11 +10,24 @@
 
     $.fn.glue = function (obj) {
 
-        map[$(this).attr('id')] = obj;
+        keys.push($(this)[0]);
+        vals.push(obj);
 
-        var a = $(this).each(function () {
+        obj.view = $(this);
+        if (obj.__init != undefined) {
+            $(obj.__init);
+        }
 
-            obj.view = $(this);
+        function map(key) {
+            for (var i = 0; i < keys.length; i++) {
+                if (keys[i] == key) {
+                    return vals[i];
+                }
+            }
+            return null;
+        }
+
+        return $(this).each(function () {
 
             $(this).each(function () {
                 $.each(this.attributes, function () {
@@ -23,12 +37,35 @@
                         var value = this.value;
                         defineProperty(obj, (name || value), {
                             get: function () {
-                                return map[value];
+                                return map($('#' + value)[0]);
                             }
                         });
-
                     }
                 });
+            });
+
+            $(this).find('[data-child][data-child!=""]').not($(this).find('[data-child] [data-child]')).each(function (i, el) {
+
+                (function bindChild(obj) {
+                    var split = $(el).attr('data-child').split('.');
+                    var key = split[0];
+                    var index = split[1];
+                    if (index == null) {
+                        defineProperty(obj, key, {
+                            get: function () {
+                                return map(el);
+                            }
+                        });
+                    } else {
+                        obj[key] = (obj[key] || []);
+                        defineProperty(obj[key], index, {
+                            get: function () {
+                                return map(el);
+                            }
+                        });
+                    }
+                })(obj);
+
             });
 
             $(this).findBack('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
@@ -98,12 +135,6 @@
             }
 
         });
-
-        if (obj.__init != undefined) {
-            obj.__init();
-        }
-
-        return a;
     };
 
     function bindAttr(el, obj, exp, name) {
@@ -116,9 +147,11 @@
         }
 
         function load() {
-            if (root.onLoad != null) {
-                root.onLoad(fullProp, getAttr(el, name));
-            }
+            $(function () {
+                if (root.onLoad != null) {
+                    root.onLoad(fullProp, getAttr(el, name));
+                }
+            });
         }
     }
 
