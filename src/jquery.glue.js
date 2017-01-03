@@ -13,11 +13,6 @@
         keys.push($(this)[0]);
         vals.push(obj);
 
-        obj.view = $(this);
-        if (obj.__init != undefined) {
-            $(obj.__init);
-        }
-
         function map(key) {
             for (var i = 0; i < keys.length; i++) {
                 if (keys[i] == key) {
@@ -27,7 +22,7 @@
             return null;
         }
 
-        return $(this).each(function () {
+        var a = $(this).each(function () {
 
             $(this).each(function () {
                 $.each(this.attributes, function () {
@@ -135,6 +130,13 @@
             }
 
         });
+
+        obj.view = $(this);
+        if (obj.__init != undefined) {
+            $(obj.__init);
+        }
+
+        return a;
     };
 
     function bindAttr(el, obj, exp, name) {
