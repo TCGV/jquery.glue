@@ -13,32 +13,25 @@
 
     <div class="container">
 
-        <div class="tabs">
+        <div class="tabs" data-instance="Tabs">
             <button data-el="buttons.0" data-action="select">one</button>
             <button data-el="buttons.1" data-action="select">two</button>
             <button data-el="buttons.2" data-action="select">three</button>
 			
-			<div class="body left" data-child="bodies.0">
+			<div class="body left" data-instance="Body" data-child="bodies.0">
 				<h3>Tab #1</h3>
 			</div>
 			
-			<div class="body center" data-child="bodies.1">
+			<div class="body center" data-instance="Body" data-child="bodies.1">
 				<h3>Tab #2</h3>
 			</div>
 			
-			<div class="body right" data-child="bodies.2">
+			<div class="body right" data-instance="Body" data-child="bodies.2">
 				<h3>Tab #3</h3>
 			</div>
         </div>
 
     </div>
-
-    <script>
-        $('.tabs').glue(new Tabs());
-		$('.body').each(function (i, v) {
-			$(v).glue(new Body());
-		});
-    </script>
 
 </body>
 </html>

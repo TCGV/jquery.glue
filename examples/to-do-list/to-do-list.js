@@ -106,6 +106,10 @@
         this.description = '';
         this.done = false;
 
+		this.__init = function (){
+			self.list = self.resolve(ToDoList)[0];
+		};
+		
         this.setDone = function () {
             if (!self.done) {
                 self.done = true;

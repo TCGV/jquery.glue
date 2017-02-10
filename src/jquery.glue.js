@@ -4,6 +4,14 @@
     var vals = [];
     var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
+    $(function () {
+        $('[data-instance]').each(function (i, v) {
+            var name = $(v).attr('data-instance')
+            var obj = new window[name];
+            $(v).glue(obj);
+        });
+    });
+
     $.fn.findBack = function (selector) {
         return $(this).find(selector).addBack(selector);
     };
@@ -132,6 +140,14 @@
         });
 
         obj.view = $(this);
+        obj.resolve = function (classType) {
+			var a = [];
+            for (var i = 0; i < vals.length; i++) {
+                if (vals[i] instanceof classType)
+                    a.push(vals[i]);
+            }
+            return a;
+        };
         if (obj.__init != undefined) {
             $(obj.__init);
         }
