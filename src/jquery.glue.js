@@ -15,8 +15,8 @@
             var obj = new window[name];
             $(v).glue(obj);
         });
-        $(document).trigger(glueReadyEv);
         glueReady = true;
+        $(document).trigger(glueReadyEv);
     });
 
     $.fn.findBack = function (selector) {
