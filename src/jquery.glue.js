@@ -4,12 +4,19 @@
     var vals = [];
     var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
+    var jQueryReady = false;
+    var glueReady = false;
+    var glueReadyEv = 'glue.ready';
+
     $(function () {
+        jQueryReady = true;
         $('[data-instance]').each(function (i, v) {
-            var name = $(v).attr('data-instance')
+            var name = $(v).attr('data-instance');
             var obj = new window[name];
             $(v).glue(obj);
         });
+        $(document).trigger(glueReadyEv);
+        glueReady = true;
     });
 
     $.fn.findBack = function (selector) {
@@ -139,9 +146,13 @@
 
         });
 
-        obj.view = $(this);
+        if (obj.view == undefined) {
+            obj.view = $(this);
+        } else {
+            obj.view = obj.view.add(this);
+        }
         obj.resolve = function (classType) {
-			var a = [];
+            var a = [];
             for (var i = 0; i < vals.length; i++) {
                 if (vals[i] instanceof classType)
                     a.push(vals[i]);
@@ -149,7 +160,13 @@
             return a;
         };
         if (obj.__init != undefined) {
-            $(obj.__init);
+            if (glueReady) {
+                obj.__init();
+            } else if (jQueryReady) {
+                $(document).on(glueReadyEv, obj.__init);
+            } else {
+                $(obj.__init);
+            }
         }
 
         return a;
