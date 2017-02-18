@@ -2,19 +2,19 @@
 
     var keys = [];
     var vals = [];
+    var templates = [];
     var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
     var jQueryReady = false;
     var glueReady = false;
     var glueReadyEv = 'glue.ready';
 
+    addCss('[data-template] { display: none; }');
+
     $(function () {
         jQueryReady = true;
-        $('[data-instance]').each(function (i, v) {
-            var name = $(v).attr('data-instance');
-            var obj = new window[name];
-            $(v).glue(obj);
-        });
+        $('[data-template]').each(parseTemplates);
+        $('[data-instance]').each(parseInstances);
         glueReady = true;
         $(document).trigger(glueReadyEv);
     });
@@ -28,108 +28,28 @@
         keys.push($(this)[0]);
         vals.push(obj);
 
-        function map(key) {
-            for (var i = 0; i < keys.length; i++) {
-                if (keys[i] == key) {
-                    return vals[i];
-                }
-            }
-            return null;
-        }
-
         var a = $(this).each(function () {
 
             $(this).each(function () {
                 $.each(this.attributes, function () {
-                    if (this.specified && this.name.indexOf('data-ref') == 0) {
-                        var name = this.name.replace('data-ref', '');
-                        name = name.length > 0 ? name.substr(1) : '';
-                        var value = this.value;
-                        defineProperty(obj, (name || value), {
-                            get: function () {
-                                return map($('#' + value)[0]);
-                            }
-                        });
-                    }
+                    bindReferences.call(this, obj);
                 });
             });
 
             $(this).find('[data-child][data-child!=""]').not($(this).find('[data-child] [data-child]')).each(function (i, el) {
-
-                (function bindChild(obj) {
-                    var split = $(el).attr('data-child').split('.');
-                    var key = split[0];
-                    var index = split[1];
-                    if (index == null) {
-                        defineProperty(obj, key, {
-                            get: function () {
-                                return map(el);
-                            }
-                        });
-                    } else {
-                        obj[key] = (obj[key] || []);
-                        defineProperty(obj[key], index, {
-                            get: function () {
-                                return map(el);
-                            }
-                        });
-                    }
-                })(obj);
-
+                bindChild(obj, i, el);
             });
 
             $(this).findBack('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
-
-                (function bindElement(obj) {
-                    var split = $(el).attr('data-el').split('.');
-                    var key = split[0];
-                    var index = split[1];
-                    if (index == null) {
-                        obj[key] = $(el);
-                    } else {
-                        obj[key] = (obj[key] || []);
-                        obj[key][index] = $(el);
-                    }
-                })(obj);
-
+                bindElement(obj, i, el);
             });
 
             $(this).findBack('[data-action]').not($(this).find('[data-child] [data-action]')).each(function (i, el) {
-
-                (function bindAction(obj) {
-                    var act = $(el).attr('data-action').split('.');
-                    act = act[act.length - 1];
-
-                    if (typeof obj[act] === 'function') {
-                        addEvent(el, 'click', obj[act]);
-                    }
-                })(obj);
-
+                bindAction(obj, i, el);
             });
 
             $(this).findBack('[data-show],[data-hide]').not($(this).find('[data-child] [data-show],[data-child] [data-hide]')).each(function (i, el) {
-
-                (function bindVisibility(obj) {
-
-                    var prop = ($(el).attr('data-show') || $(el).attr('data-hide')).split('.');
-                    obj = getObject(obj, prop);
-                    prop = prop[prop.length - 1];
-
-                    if (obj != undefined) {
-
-                        defineProperty(obj, prop, {
-                            set: function (val) {
-                                if ((val == false && $(el).is('[data-show]')) || (val == true && $(el).is('[data-hide]'))) {
-                                    $(el).hide();
-                                } else {
-                                    $(el).show();
-                                }
-                            }
-                        });
-                    }
-
-                })(obj);
-
+                bindVisibility(obj, i, el);
             });
 
             $(this).findBack('[data-prop]').not($(this).find('[data-child] [data-prop]')).each(function (i, el) {
@@ -146,19 +66,39 @@
 
         });
 
+        extend.call(this, obj);
+
+        return a;
+    };
+
+    function extend(obj) {
         if (obj.view == undefined) {
             obj.view = $(this);
         } else {
             obj.view = obj.view.add(this);
         }
+
+        obj.template = function (classType) {
+            for (var p in templates) {
+                if (templates.hasOwnProperty(p) && window[p] == classType) {
+                    return templates[p].clone().removeAttr('data-template');
+                }
+            }
+            return null;
+        };
+
         obj.resolve = function (classType) {
             var a = [];
             for (var i = 0; i < vals.length; i++) {
-                if (vals[i] instanceof classType)
-                    a.push(vals[i]);
+                if (vals[i] instanceof classType) {
+                    if (jQuery.contains(document, vals[i].view.get(0))) {
+                        a.push(vals[i]);
+                    }
+                }
             }
             return a;
         };
+
         if (obj.__init != undefined) {
             if (glueReady) {
                 obj.__init();
@@ -168,9 +108,94 @@
                 $(obj.__init);
             }
         }
+    }
 
-        return a;
-    };
+    function parseTemplates(i, v) {
+        var name = $(v).attr('data-template');
+        templates[name] = $(v);
+
+    }
+
+    function parseInstances(i, v) {
+        var name = $(v).attr('data-instance');
+        var obj = new window[name];
+        $(v).glue(obj);
+    }
+
+    function bindReferences(obj) {
+        if (this.specified && this.name.indexOf('data-ref') == 0) {
+            var name = this.name.replace('data-ref', '');
+            name = name.length > 0 ? name.substr(1) : '';
+            var value = this.value;
+            defineProperty(obj, (name || value), {
+                get: function () {
+                    return map($('#' + value)[0]);
+                }
+            });
+        }
+    }
+
+    function bindChild(obj, i, el) {
+        var split = $(el).attr('data-child').split('.');
+        var key = split[0];
+        var index = split[1];
+        if (index == null) {
+            defineProperty(obj, key, {
+                get: function () {
+                    return map(el);
+                }
+            });
+        } else {
+            obj[key] = (obj[key] || []);
+            defineProperty(obj[key], index, {
+                get: function () {
+                    return map(el);
+                }
+            });
+        }
+    }
+
+    function bindElement(obj, i, el) {
+        var split = $(el).attr('data-el').split('.');
+        var key = split[0];
+        var index = split[1];
+        if (index == null) {
+            obj[key] = $(el);
+        } else {
+            obj[key] = (obj[key] || []);
+            obj[key][index] = $(el);
+        }
+    }
+
+    function bindAction(obj, i, el) {
+        var act = $(el).attr('data-action').split('.');
+        act = act[act.length - 1];
+
+        if (typeof obj[act] === 'function') {
+            addEvent(el, 'click', obj[act]);
+        }
+    }
+
+    function bindVisibility(obj, i, el) {
+
+        var prop = ($(el).attr('data-show') || $(el).attr('data-hide')).split('.');
+        obj = getObject(obj, prop);
+        prop = prop[prop.length - 1];
+
+        if (obj != undefined) {
+
+            defineProperty(obj, prop, {
+                set: function (val) {
+                    if ((val == false && $(el).is('[data-show]')) || (val == true && $(el).is('[data-hide]'))) {
+                        $(el).css('display', 'none');
+                    } else {
+                        $(el).css('display', '');
+                    }
+                }
+            });
+        }
+
+    }
 
     function bindAttr(el, obj, exp, name) {
         var root = obj;
@@ -229,6 +254,15 @@
         }
     }
 
+    function map(key) {
+        for (var i = 0; i < keys.length; i++) {
+            if (keys[i] == key) {
+                return vals[i];
+            }
+        }
+        return null;
+    }
+
     function getObject(obj, prop) {
         for (var i = 0; i < prop.length - 1; i++) {
             obj = (obj || {})[prop[i]];
@@ -258,7 +292,7 @@
             return _value;
         };
 
-        Object.defineProperty(obj, prop, { get: _get, set: _set });
+        Object.defineProperty(obj, prop, { get: _get, set: _set, configurable: true });
         obj['_setters'][prop] = _set;
     }
 
@@ -328,5 +362,16 @@
             };
         }
     }());
+
+    function addCss(cssCode) {
+        var styleElement = document.createElement("style");
+        styleElement.type = "text/css";
+        if (styleElement.styleSheet) {
+            styleElement.styleSheet.cssText = cssCode;
+        } else {
+            styleElement.appendChild(document.createTextNode(cssCode));
+        }
+        document.getElementsByTagName("head")[0].appendChild(styleElement);
+    }
 
 }(jQuery));

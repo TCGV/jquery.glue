@@ -27,13 +27,11 @@
         </div>
 
         <div class="toDoItems" data-el="container">
-            <div style="display: none">
-                <div class="toDoItem" data-el="template" data-child>
-                    <button data-action="remove">remove</button>
-                    <button data-action="setDone" data-el="doneBtn">done</button>
-                    <span data-prop="description"></span>
-                </div>
-            </div>
+			<div class="toDoItem" data-template="ToDoItem" data-child>
+				<button data-action="remove">remove</button>
+				<button data-action="setDone" data-el="doneBtn">done</button>
+				<span data-prop="description"></span>
+			</div>
         </div>
     </div>
 

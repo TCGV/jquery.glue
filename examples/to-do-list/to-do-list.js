@@ -13,9 +13,9 @@
         };
 
         this.addItem = function (item) {
-            var $t = self.template.clone();
-            self.container.append($t);
-            $t.glue(item);
+            self.template(ToDoItem)
+				.appendTo(self.container)
+				.glue(item);
             self.items.push(item);
             self.length = self.items.length;
             self.pending += item.done ? 0 : 1;
