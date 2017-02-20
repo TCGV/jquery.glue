@@ -9,7 +9,7 @@
     var glueReady = false;
     var glueReadyEv = 'glue.ready';
 
-    addCss('[data-template] { display: none; }');
+    addCss('[data-template] { display: none !important; }');
 
     $(function () {
         jQueryReady = true;
@@ -22,6 +22,24 @@
     $.fn.findBack = function (selector) {
         return $(this).find(selector).addBack(selector);
     };
+
+    $.each(['append', 'prepend', 'after', 'before'], function (i, v) {
+        var old = $.fn[v];
+        $.fn[v] = function (content) {
+            $(content).findBack('[data-template]').each(parseTemplates);
+            $(content).findBack('[data-instance]').each(parseInstances);
+            return old.apply(this, arguments);
+        };
+    });
+
+    $.each(['appendTo', 'prependTo', 'insertAfter', 'insertBefore'], function (i, v) {
+        var old = $.fn[v];
+        $.fn[v] = function () {
+            $(this).findBack('[data-template]').each(parseTemplates);
+            $(this).findBack('[data-instance]').each(parseInstances);
+            return old.apply(this, arguments);
+        };
+    });
 
     $.fn.glue = function (obj) {
 
@@ -78,10 +96,11 @@
             obj.view = obj.view.add(this);
         }
 
-        obj.template = function (classType) {
+        obj.template = function (classType, index) {
             for (var p in templates) {
                 if (templates.hasOwnProperty(p) && window[p] == classType) {
-                    return templates[p].clone().removeAttr('data-template');
+                    var el = obj.view.find('[data-template=' + p + ']').eq(index || 0);
+                    return el.clone().removeAttr('data-template').insertBefore(el);
                 }
             }
             return null;

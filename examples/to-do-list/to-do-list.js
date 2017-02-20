@@ -13,9 +13,7 @@
         };
 
         this.addItem = function (item) {
-            self.template(ToDoItem)
-				.appendTo(self.container)
-				.glue(item);
+            self.template(ToDoItem).glue(item);
             self.items.push(item);
             self.length = self.items.length;
             self.pending += item.done ? 0 : 1;
