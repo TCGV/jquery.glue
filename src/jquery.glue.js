@@ -47,6 +47,18 @@
         vals.push(obj);
 
         var a = $(this).each(function () {
+			
+			var childs = $(this).find('[data-child],[data-instance],[data-template]');
+			
+			function notChild(i, el) {
+				for (var i = 0; i < childs.length; i++) {
+					var c = childs[i];
+					var v = c.getAttribute('data-child');
+					if ((v == null && c == el) || $.contains(c, el))
+						return false;
+				}
+				return true;
+			}
 
             $(this).each(function () {
                 $.each(this.attributes, function () {
@@ -54,30 +66,30 @@
                 });
             });
 
-            $(this).find('[data-child][data-child!=""]').not($(this).find('[data-child] [data-child]')).each(function (i, el) {
+            $(this).find('[data-child][data-child!=""]').filter(notChild).each(function (i, el) {
                 bindChild(obj, i, el);
             });
 
-            $(this).findBack('[data-el]').not($(this).find('[data-child] [data-el]')).each(function (i, el) {
+            $(this).findBack('[data-el]').filter(notChild).each(function (i, el) {
                 bindElement(obj, i, el);
             });
 
-            $(this).findBack('[data-action]').not($(this).find('[data-child] [data-action]')).each(function (i, el) {
+            $(this).findBack('[data-action]').filter(notChild).each(function (i, el) {
                 bindAction(obj, i, el);
             });
 
-            $(this).findBack('[data-show],[data-hide]').not($(this).find('[data-child] [data-show],[data-child] [data-hide]')).each(function (i, el) {
+            $(this).findBack('[data-show],[data-hide]').filter(notChild).each(function (i, el) {
                 bindVisibility(obj, i, el);
             });
 
-            $(this).findBack('[data-prop]').not($(this).find('[data-child] [data-prop]')).each(function (i, el) {
+            $(this).findBack('[data-prop]').filter(notChild).each(function (i, el) {
                 bindObject(el, obj, 'data-prop', getValue, setValue);
             });
 
             for (var x = 0; x < attrs.length; x++) {
                 var name = attrs[x];
                 var exp = 'data-' + name;
-                $(this).findBack('[' + exp + ']').not($(this).find('[data-child] [' + exp + ']')).each(function (i, el) {
+                $(this).findBack('[' + exp + ']').filter(notChild).each(function (i, el) {
                     bindAttr(el, obj, exp, name);
                 });
             }
@@ -265,10 +277,11 @@
         }
 
         function change() {
-            obj[prop] = getter(el);
-            if (root.onChange != null && (getter(el) != lastValue || isRadio(el))) {
-                root.onChange(fullProp, getter(el), lastValue && !isRadio(el));
-                lastValue = getter(el);
+			var newVal = getter(el);
+            obj[prop] = newVal;
+            if (root.onChange != null && (newVal != lastValue || isRadio(el))) {
+                root.onChange(fullProp, newVal, isRadio(el) ? false : lastValue);
+                lastValue = newVal;
             }
         }
     }
