@@ -47,18 +47,18 @@
         vals.push(obj);
 
         var a = $(this).each(function () {
-			
-			var childs = $(this).find('[data-child],[data-instance],[data-template]');
-			
-			function notChild(i, el) {
-				for (var i = 0; i < childs.length; i++) {
-					var c = childs[i];
-					var v = c.getAttribute('data-child');
-					if ((v == null && c == el) || $.contains(c, el))
-						return false;
-				}
-				return true;
-			}
+
+            var childs = $(this).find('[data-child],[data-instance],[data-template]');
+
+            function notChild(i, el) {
+                for (var i = 0; i < childs.length; i++) {
+                    var c = childs[i];
+                    var v = c.getAttribute('data-child');
+                    if ((v == null && c == el) || $.contains(c, el))
+                        return false;
+                }
+                return true;
+            }
 
             $(this).each(function () {
                 $.each(this.attributes, function () {
@@ -148,9 +148,11 @@
     }
 
     function parseInstances(i, v) {
-        var name = $(v).attr('data-instance');
-        var obj = new window[name];
-        $(v).glue(obj);
+        var names = $(v).attr('data-instance').split('.');
+        var func = window[names[0]];
+        for (var i = 1; i < names.length; i++)
+            func = func[names[i]];
+        $(v).glue(new func);
     }
 
     function bindReferences(obj) {
@@ -277,7 +279,7 @@
         }
 
         function change() {
-			var newVal = getter(el);
+            var newVal = getter(el);
             obj[prop] = newVal;
             if (root.onChange != null && (newVal != lastValue || isRadio(el))) {
                 root.onChange(fullProp, newVal, isRadio(el) ? false : lastValue);

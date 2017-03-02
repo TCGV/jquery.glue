@@ -26,6 +26,34 @@ QUnit.test("[data-instance] test", function (assert) {
 });
 
 
+QUnit.test("[data-instance] namespace test", function (assert) {
+
+    var initialized = false;
+
+    (function (wnd) {
+        wnd.MyClass = function () {
+
+            var count = 0;
+
+            this.__init = function () {
+                initialized = true;
+            };
+
+            this.getCount = function () {
+                return count;
+            };
+        };
+    }((window.MyNameSpace = {})));
+
+    var html = appendToBody('<div data-instance="MyNameSpace.MyClass"></div>');
+
+    $(function () {
+        assert.ok(initialized);
+    });
+
+});
+
+
 QUnit.test("this.onChange test", function (assert) {
 
     window.NameList = function () {
@@ -38,7 +66,7 @@ QUnit.test("this.onChange test", function (assert) {
         this.onChange = function (prop, newVal, oldVal) {
             if (prop == 'name') {
                 self.names += newVal + '; ';
-				self.oldNames += oldVal + '; ';
+                self.oldNames += oldVal + '; ';
             }
         };
     };
