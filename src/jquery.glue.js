@@ -217,8 +217,11 @@
 
         if (obj != undefined) {
 
+            var v = obj[prop];
             defineProperty(obj, prop, {
+                get: function () { return v; },
                 set: function (val) {
+                    v = val;
                     if ((val == false && $(el).is('[data-show]')) || (val == true && $(el).is('[data-hide]'))) {
                         $(el).css('display', 'none');
                     } else {
@@ -226,6 +229,7 @@
                     }
                 }
             });
+            obj[prop] = v;
         }
 
     }

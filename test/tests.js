@@ -273,6 +273,51 @@ QUnit.test("[data-template] test", function (assert) {
 });
 
 
+QUnit.test("[data-show] test", function (assert) {
+
+	var obj = null;
+	
+    window.MyClass = function () {
+		obj = this;
+        this.foo = false;
+    };
+
+    var html = appendToBody('<div data-instance="MyClass" data-show="foo"></div>');
+
+    $(function () {
+        assert.ok(!html.is(':visible'));
+		obj.foo = true;
+        assert.ok(html.is(':visible'));
+    });
+
+});
+
+
+QUnit.test("[data-hide] test", function (assert) {
+
+	var obj = null;
+	
+    window.MyClass = function () {
+		obj = this;
+        this.foo = false;
+    };
+
+    var html = appendToBody('<div data-instance="MyClass" data-hide="foo"></div>');
+
+    $(function () {
+        assert.ok(html.is(':visible'));
+		obj.foo = true;
+        assert.ok(!html.is(':visible'));
+    });
+
+});
+
+
+QUnit.testDone(function( details ) {
+  $('#sandbox').empty();
+});
+
+
 function appendToBody(html) {
-    return $(html).appendTo($('body')).hide();
+    return $(html).appendTo($('#sandbox'));
 }
