@@ -26,10 +26,15 @@
     $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
-            arguments[0] = $(content);
+            if (v != 'html' && arguments.length > 0) {
+                arguments[0] = $(content);
+            }
             var r = old.apply(this, arguments);
-            arguments[0].findBack('[data-template]').each(parseTemplates);
-            arguments[0].findBack('[data-instance]').each(parseInstances);
+            if (arguments.length > 0) {
+                var el = v != 'html' ? arguments[0] : $(this).children();
+                el.findBack('[data-template]').each(parseTemplates);
+                el.findBack('[data-instance]').each(parseInstances);
+            }
             return r;
         };
     });

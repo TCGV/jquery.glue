@@ -73,6 +73,7 @@ QUnit.test("[data-instance] dynamic initialization test", function (assert) {
         $('#sandbox').before(html);
 
         $('#sandbox').html(html);
+        $('#sandbox').html('this is not HTML');
 
         assert.ok(count == 9);
 
