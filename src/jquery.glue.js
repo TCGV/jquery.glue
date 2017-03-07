@@ -26,18 +26,20 @@
     $.each(['append', 'prepend', 'after', 'before'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
+			var r = old.apply(this, arguments);
             $(content).findBack('[data-template]').each(parseTemplates);
             $(content).findBack('[data-instance]').each(parseInstances);
-            return old.apply(this, arguments);
+            return r;
         };
     });
 
     $.each(['appendTo', 'prependTo', 'insertAfter', 'insertBefore'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function () {
+			var r = old.apply(this, arguments);
             $(this).findBack('[data-template]').each(parseTemplates);
             $(this).findBack('[data-instance]').each(parseInstances);
-            return old.apply(this, arguments);
+            return r;
         };
     });
 
