@@ -32,15 +32,8 @@ QUnit.test("[data-instance] namespace test", function (assert) {
 
     (function (wnd) {
         wnd.MyClass = function () {
-
-            var count = 0;
-
             this.__init = function () {
                 initialized = true;
-            };
-
-            this.getCount = function () {
-                return count;
             };
         };
     }((window.MyNameSpace = {})));
@@ -49,6 +42,67 @@ QUnit.test("[data-instance] namespace test", function (assert) {
 
     $(function () {
         assert.ok(initialized);
+    });
+
+});
+
+
+QUnit.test("[data-instance] dynamic initialization test", function (assert) {
+
+    var count = 0;
+
+    (function (wnd) {
+        wnd.MyClass = function () {
+            this.__init = function () {
+                count++;
+            };
+        };
+    }((window.MyNameSpace = {})));
+
+    $(function () {
+        var html = '<div data-instance="MyNameSpace.MyClass"></div>';
+
+        $(html).appendTo($('#sandbox'));
+        $(html).prependTo($('#sandbox'));
+        $(html).insertAfter($('#sandbox'));
+        $(html).insertBefore($('#sandbox'));
+
+        $('#sandbox').append(html);
+        $('#sandbox').prepend(html);
+        $('#sandbox').after(html);
+        $('#sandbox').before(html);
+
+        $('#sandbox').html(html);
+
+        assert.ok(count == 9);
+
+        $('[data-instance="MyNameSpace.MyClass"]').remove();
+    });
+
+});
+
+
+QUnit.test("[data-instance] single initialization test", function (assert) {
+
+    var count = 0;
+
+    (function (wnd) {
+        wnd.MyClass = function () {
+            this.__init = function () {
+                count++;
+            };
+        };
+    }((window.MyNameSpace = {})));
+
+    $(function () {
+        var html = $('<div data-instance="MyNameSpace.MyClass"></div>');
+
+        html.appendTo($('#sandbox'));
+        html.prependTo($('#sandbox'));
+
+        assert.ok(count == 1);
+
+        $('[data-instance="MyNameSpace.MyClass"]').remove();
     });
 
 });
@@ -275,10 +329,10 @@ QUnit.test("[data-template] test", function (assert) {
 
 QUnit.test("[data-show] test", function (assert) {
 
-	var obj = null;
-	
+    var obj = null;
+
     window.MyClass = function () {
-		obj = this;
+        obj = this;
         this.foo = false;
     };
 
@@ -286,7 +340,7 @@ QUnit.test("[data-show] test", function (assert) {
 
     $(function () {
         assert.ok(!html.is(':visible'));
-		obj.foo = true;
+        obj.foo = true;
         assert.ok(html.is(':visible'));
     });
 
@@ -295,10 +349,10 @@ QUnit.test("[data-show] test", function (assert) {
 
 QUnit.test("[data-hide] test", function (assert) {
 
-	var obj = null;
-	
+    var obj = null;
+
     window.MyClass = function () {
-		obj = this;
+        obj = this;
         this.foo = false;
     };
 
@@ -306,15 +360,15 @@ QUnit.test("[data-hide] test", function (assert) {
 
     $(function () {
         assert.ok(html.is(':visible'));
-		obj.foo = true;
+        obj.foo = true;
         assert.ok(!html.is(':visible'));
     });
 
 });
 
 
-QUnit.testDone(function( details ) {
-  $('#sandbox').empty();
+QUnit.testDone(function (details) {
+    $('#sandbox').empty();
 });
 
 

@@ -23,22 +23,13 @@
         return $(this).find(selector).addBack(selector);
     };
 
-    $.each(['append', 'prepend', 'after', 'before'], function (i, v) {
+    $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
-			var r = old.apply(this, arguments);
-            $(content).findBack('[data-template]').each(parseTemplates);
-            $(content).findBack('[data-instance]').each(parseInstances);
-            return r;
-        };
-    });
-
-    $.each(['appendTo', 'prependTo', 'insertAfter', 'insertBefore'], function (i, v) {
-        var old = $.fn[v];
-        $.fn[v] = function () {
-			var r = old.apply(this, arguments);
-            $(this).findBack('[data-template]').each(parseTemplates);
-            $(this).findBack('[data-instance]').each(parseInstances);
+            arguments[0] = $(content);
+            var r = old.apply(this, arguments);
+            arguments[0].findBack('[data-template]').each(parseTemplates);
+            arguments[0].findBack('[data-instance]').each(parseInstances);
             return r;
         };
     });
@@ -48,7 +39,7 @@
         keys.push($(this)[0]);
         vals.push(obj);
 
-        var a = $(this).each(function () {
+        $(this).each(function () {
 
             var childs = $(this).find('[data-child],[data-instance],[data-template]');
 
@@ -100,7 +91,7 @@
 
         extend.call(this, obj);
 
-        return a;
+        return $(this);
     };
 
     function extend(obj) {
@@ -150,11 +141,15 @@
     }
 
     function parseInstances(i, v) {
-        var names = $(v).attr('data-instance').split('.');
-        var func = window[names[0]];
-        for (var i = 1; i < names.length; i++)
-            func = func[names[i]];
-        $(v).glue(new func);
+        var data_instance_parsed = 'data_instance_parsed';
+        if ($(v).data(data_instance_parsed) == null) {
+            var names = $(v).attr('data-instance').split('.');
+            var func = window[names[0]];
+            for (var i = 1; i < names.length; i++)
+                func = func[names[i]];
+            $(v).glue(new func);
+            $(v).data(data_instance_parsed, true);
+        }
     }
 
     function bindReferences(obj) {
