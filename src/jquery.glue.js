@@ -8,6 +8,7 @@
     var jQueryReady = false;
     var glueReady = false;
     var glueReadyEv = 'glue.ready';
+    var ALT_KEY_CODE = 18;
 
     addCss('[data-template] { display: none !important; }');
 
@@ -272,7 +273,7 @@
 
             addEvent(el, 'change', change);
             addEvent(el, 'keypress', change);
-            addEvent(el, 'keyup', change);
+            addEvent(el, 'keyup', keyup);
 
             defineProperty(obj, prop, {
                 get: function () {
@@ -282,6 +283,13 @@
                     settter(el, val);
                 }
             });
+        }
+
+        function keyup(e) {
+            if (e.which == ALT_KEY_CODE)
+                setTimeout(change, 1);
+            else
+                change();
         }
 
         function change() {
