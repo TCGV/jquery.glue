@@ -109,7 +109,7 @@ QUnit.test("[data-instance] single initialization test", function (assert) {
 });
 
 
-QUnit.test("this.onChange test", function (assert) {
+QUnit.test("this.onChange setting element value test", function (assert) {
 
     window.NameList = function () {
 
@@ -140,6 +140,40 @@ QUnit.test("this.onChange test", function (assert) {
 			.val('Victor').change();
         assert.ok('Bill; John; Victor; ' == html.find('[data-prop="names"]').text());
         assert.ok('; Bill; John; ' == html.find('[data-prop="oldNames"]').text());
+    });
+
+});
+
+
+QUnit.test("this.onChange setting property directly test", function (assert) {
+
+    var obj = null;
+
+    window.NameList = function () {
+
+        obj = this;
+        this.name = null;
+        this.names = '';
+
+        this.onChange = function (prop, newVal, oldVal) {
+            if (prop == 'name') {
+                obj.names += newVal + '; ';
+            }
+        };
+    };
+
+    var html = appendToBody(
+		'<div data-instance="NameList">' +
+		'<input data-prop="name" type="text"/>' +
+		'<span data-prop="names"></span>' +
+		'<span data-prop="oldNames"></span>' +
+		'</div>');
+
+    $(function () {
+        obj.name = 'Bill';
+        obj.name = 'John';
+        obj.name = 'Victor';
+        assert.ok('Bill; John; Victor; ' == html.find('[data-prop="names"]').text());
     });
 
 });

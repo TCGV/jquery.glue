@@ -258,6 +258,7 @@
     function bindObject(el, obj, exp, getter, settter) {
         var root = obj;
         var fullProp = $(el).attr(exp);
+        var v = null;
         var lastValue = null;
 
         var prop = fullProp.split('.');
@@ -266,7 +267,7 @@
 
         if (obj != undefined) {
 
-            var v = obj[prop];
+            v = obj[prop];
             v = v != undefined ? v : getter(el);
             settter(el, v);
             lastValue = v;
@@ -281,6 +282,11 @@
                 }, set: function (val) {
                     v = val;
                     settter(el, val);
+                    if (root.onChange != null && v != lastValue) {
+                        var _v = lastValue;
+                        lastValue = v;
+                        root.onChange(fullProp, v, _v);
+                    }
                 }
             });
         }
@@ -293,11 +299,10 @@
         }
 
         function change() {
-            var newVal = getter(el);
-            obj[prop] = newVal;
-            if (root.onChange != null && (newVal != lastValue || isRadio(el))) {
-                root.onChange(fullProp, newVal, isRadio(el) ? false : lastValue);
-                lastValue = newVal;
+            v = getter(el);
+            if (root.onChange != null && (v != lastValue || isRadio(el))) {
+                root.onChange(fullProp, v, isRadio(el) ? false : lastValue);
+                lastValue = v;
             }
         }
     }
