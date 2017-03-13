@@ -9,6 +9,7 @@
     var glueReady = false;
     var glueReadyEv = 'glue.ready';
     var ALT_KEY_CODE = 18;
+    var _append = $.fn['append'];
 
     addCss('[data-template] { display: none !important; }');
 
@@ -27,12 +28,14 @@
     $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
-            if (v != 'html' && arguments.length > 0) {
-                arguments[0] = $(content);
+            var d = $('<div>');
+            if (arguments.length > 0) {
+                _append.apply(d, [arguments[0]]);
+                arguments[0] = d.children().length > 0 ? d.children() : d.html();
             }
             var r = old.apply(this, arguments);
-            if (arguments.length > 0) {
-                var el = v != 'html' ? arguments[0] : $(this).children();
+            if (arguments.length > 0 && typeof arguments[0] != 'string') {
+                var el = arguments[0];
                 el.findBack('[data-template]').each(parseTemplates);
                 el.findBack('[data-instance]').each(parseInstances);
             }
