@@ -28,17 +28,10 @@
     $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
-            var d = $('<div>');
-            if (arguments.length > 0) {
-                _append.apply(d, [arguments[0]]);
-                arguments[0] = d.children().length > 0 ? d.children() : d.html();
-            }
             var r = old.apply(this, arguments);
-            if (arguments.length > 0 && typeof arguments[0] != 'string') {
-                var el = arguments[0];
-                el.findBack('[data-template]').each(parseTemplates);
-                el.findBack('[data-instance]').each(parseInstances);
-            }
+            var el = (v == 'after' || v == 'before' ? $(this).parent() : $(this));
+            el.find('[data-template]').each(parseTemplates);
+            el.find('[data-instance]').each(parseInstances);
             return r;
         };
     });
@@ -146,7 +139,6 @@
     function parseTemplates(i, v) {
         var name = $(v).attr('data-template');
         templates[name] = $(v);
-
     }
 
     function parseInstances(i, v) {

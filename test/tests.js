@@ -402,6 +402,25 @@ QUnit.test("[data-hide] test", function (assert) {
 });
 
 
+QUnit.test("DOM mutation test", function (assert) {
+
+    var box = $('#sandbox');
+
+    box.empty().append('This is a string');
+    assert.ok(box.children().length == 0);
+    assert.ok(box.html() == 'This is a string');
+
+    box.empty().append('<span>This is HTML</span>');
+    assert.ok(box.children().length == 1);
+    assert.ok(box.html() == '<span>This is HTML</span>');
+
+    box.empty().append('This is<br><br>Mixed Content!');
+    assert.ok(box.children().length == 2);
+    assert.ok(box.html() == 'This is<br><br>Mixed Content!');
+
+});
+
+
 QUnit.testDone(function (details) {
     $('#sandbox').empty();
 });
