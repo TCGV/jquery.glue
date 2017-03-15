@@ -402,6 +402,37 @@ QUnit.test("[data-hide] test", function (assert) {
 });
 
 
+QUnit.test("Duplicate binding test", function (assert) {
+
+    var obj = null;
+
+    window.MyClass = function () {
+        obj = this;
+        this.text = 'one';
+    };
+
+    var html = appendToBody('<div data-instance="MyClass"><input type="text" data-prop="text" /><input type="text" data-prop="text" /></div>');
+
+    $(function () {
+        assert.ok('one' == html.find('input:eq(0)').val());
+        assert.ok('one' == html.find('input:eq(1)').val());
+
+        obj.text = 'two';
+        assert.ok('two' == html.find('input:eq(0)').val());
+        assert.ok('two' == html.find('input:eq(1)').val());
+
+        html.find('input:eq(0)').val('three').change();
+        assert.ok('three' == html.find('input:eq(0)').val());
+        assert.ok('three' == html.find('input:eq(1)').val());
+
+        html.find('input:eq(1)').val('four').change();
+        assert.ok('four' == html.find('input:eq(0)').val());
+        assert.ok('four' == html.find('input:eq(1)').val());
+    });
+
+});
+
+
 QUnit.test("DOM mutation test", function (assert) {
 
     var box = $('#sandbox');

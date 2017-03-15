@@ -9,7 +9,6 @@
     var glueReady = false;
     var glueReadyEv = 'glue.ready';
     var ALT_KEY_CODE = 18;
-    var _append = $.fn['append'];
 
     addCss('[data-template] { display: none !important; }');
 
@@ -277,10 +276,10 @@
                 }, set: function (val) {
                     v = val;
                     settter(el, val);
-                    if (root.onChange != null && v != lastValue) {
+                    if (root.onChange != null && (v != lastValue || isRadio(el))) {
                         var _v = lastValue;
                         lastValue = v;
-                        root.onChange(fullProp, v, _v);
+                        root.onChange(fullProp, v, isRadio(el) ? false : _v);
                     }
                 }
             });
@@ -295,9 +294,8 @@
 
         function change() {
             v = getter(el);
-            if (root.onChange != null && (v != lastValue || isRadio(el))) {
-                root.onChange(fullProp, v, isRadio(el) ? false : lastValue);
-                lastValue = v;
+            if ((v != lastValue || isRadio(el))) {
+                obj[prop] = v;
             }
         }
     }
