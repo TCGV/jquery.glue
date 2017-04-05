@@ -27,10 +27,20 @@
     $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
+            
+            var wasReady = glueReady;
+            glueReady = false;
+            
             var r = old.apply(this, arguments);
             var el = (v == 'after' || v == 'before' ? $(this).parent() : $(this));
             el.find('[data-template]').each(parseTemplates);
             el.find('[data-instance]').each(parseInstances);
+            
+            if (wasReady) {
+                glueReady = true;
+                $(document).trigger(glueReadyEv);
+            }
+            
             return r;
         };
     });
@@ -128,7 +138,7 @@
             if (glueReady) {
                 obj.__init();
             } else if (jQueryReady) {
-                $(document).on(glueReadyEv, obj.__init);
+                $(document).one(glueReadyEv, obj.__init);
             } else {
                 $(obj.__init);
             }
