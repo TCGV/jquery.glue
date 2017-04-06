@@ -373,7 +373,7 @@
             if (el.value != val) {
                 el.value = val;
             }
-        } else {
+        } else if (el.innerHTML != val) {
             el.innerHTML = val;
         }
     }
