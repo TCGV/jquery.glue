@@ -27,20 +27,20 @@
     $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
-            
+
             var wasReady = glueReady;
             glueReady = false;
-            
+
             var r = old.apply(this, arguments);
             var el = (v == 'after' || v == 'before' ? $(this).parent() : $(this));
             el.find('[data-template]').each(parseTemplates);
             el.find('[data-instance]').each(parseInstances);
-            
+
             if (wasReady) {
                 glueReady = true;
                 $(document).trigger(glueReadyEv);
             }
-            
+
             return r;
         };
     });
@@ -114,8 +114,8 @@
 
         obj.template = function (classType, index) {
             for (var p in templates) {
-                if (templates.hasOwnProperty(p) && window[p] == classType) {
-                    var el = obj.view.find('[data-template=' + p + ']').eq(index || 0);
+                if (templates.hasOwnProperty(p) && getClassType(p) == classType) {
+                    var el = obj.view.find('[data-template="' + p + '"]').eq(index || 0);
                     return el.clone().removeAttr('data-template').insertBefore(el);
                 }
             }
@@ -153,10 +153,8 @@
     function parseInstances(i, v) {
         var data_instance_parsed = 'data_instance_parsed';
         if ($(v).data(data_instance_parsed) == null) {
-            var names = $(v).attr('data-instance').split('.');
-            var func = window[names[0]];
-            for (var i = 1; i < names.length; i++)
-                func = func[names[i]];
+            var fullName = $(v).attr('data-instance');
+            var func = getClassType(fullName);
             $(v).glue(new func);
             $(v).data(data_instance_parsed, true);
         }
@@ -317,6 +315,14 @@
             }
         }
         return null;
+    }
+
+    function getClassType(fullName) {
+        var names = fullName.split('.');
+        var func = window[names[0]];
+        for (var i = 1; i < names.length; i++)
+            func = func[names[i]];
+        return func;
     }
 
     function getObject(obj, prop) {

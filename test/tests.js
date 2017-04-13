@@ -362,6 +362,42 @@ QUnit.test("[data-template] test", function (assert) {
 });
 
 
+QUnit.test("[data-template] namespace test", function (assert) {
+
+    var html = appendToBody('<div><span data-template="tcgv.ui.Child" data-prop="name"></span></div>');
+
+	window.tcgv = { ui: { } };
+	
+    window.tcgv.ui.Child = function (name) {
+        this.name = name;
+    };
+
+    var obj = new (function () {
+        var self = this;
+        this.addChild = function (name) {
+            self.template(window.tcgv.ui.Child)
+				.glue(new window.tcgv.ui.Child(name));
+        };
+    })();
+
+    html.glue(obj);
+
+    $(function () {
+        obj.addChild('One');
+        obj.addChild('Two');
+        obj.addChild('Three');
+
+        var sel = 'span:not([data-template])';
+        assert.ok(typeof obj.name == 'undefined');
+        assert.ok(3 == html.find(sel).length);
+        assert.ok('One' == html.find(sel + ':eq(0)').text());
+        assert.ok('Two' == html.find(sel + ':eq(1)').text());
+        assert.ok('Three' == html.find(sel + ':eq(2)').text());
+    });
+
+});
+
+
 QUnit.test("[data-show] test", function (assert) {
 
     var obj = null;
