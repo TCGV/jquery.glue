@@ -438,7 +438,7 @@ QUnit.test("[data-hide] test", function (assert) {
 });
 
 
-QUnit.test("Duplicate binding test", function (assert) {
+QUnit.test("Double binding test", function (assert) {
 
     var obj = null;
 

@@ -5,10 +5,10 @@
     var templates = [];
     var attrs = ['src', 'href', 'title', 'class', 'style', 'disabled'];
 
+    var ALT_KEY_CODE = 18;
     var jQueryReady = false;
     var glueReady = false;
-    var glueReadyEv = 'glue.ready';
-    var ALT_KEY_CODE = 18;
+    var glueReadyListeners = [];
 
     addCss('[data-template] { display: none !important; }');
 
@@ -16,8 +16,7 @@
         jQueryReady = true;
         $('[data-template]').each(parseTemplates);
         $('[data-instance]').each(parseInstances);
-        glueReady = true;
-        $(document).trigger(glueReadyEv);
+        glueReadyEv();
     });
 
     $.fn.findBack = function (selector) {
@@ -37,8 +36,7 @@
             el.find('[data-instance]').each(parseInstances);
 
             if (wasReady) {
-                glueReady = true;
-                $(document).trigger(glueReadyEv);
+                glueReadyEv();
             }
 
             return r;
@@ -138,9 +136,23 @@
             if (glueReady) {
                 obj.__init();
             } else if (jQueryReady) {
-                $(document).one(glueReadyEv, obj.__init);
+                glueReadyEv(obj.__init);
             } else {
                 $(obj.__init);
+            }
+        }
+    }
+
+    function glueReadyEv(listener) {
+        if (listener) {
+            glueReadyListeners.push(listener);
+        } else {
+            glueReady = true;
+            var listeners = glueReadyListeners;
+            glueReadyListeners = [];
+            while (listeners.length > 0) {
+                listeners[0]();
+                listeners.splice(0, 1);
             }
         }
     }
