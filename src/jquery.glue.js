@@ -23,15 +23,16 @@
         return $(this).find(selector).addBack(selector);
     };
 
-    $.each(['append', 'prepend', 'after', 'before', 'html'], function (i, v) {
+    $.each(['append', 'prepend', 'after', 'before', 'html', 'replaceWith'], function (i, v) {
         var old = $.fn[v];
         $.fn[v] = function (content) {
 
             var wasReady = glueReady;
             glueReady = false;
-
+			
+			var p = $(this).parent();
             var r = old.apply(this, arguments);
-            var el = (v == 'after' || v == 'before' ? $(this).parent() : $(this));
+            var el = (v == 'after' || v == 'before' || v == 'replaceWith' ? p : $(this));
             el.find('[data-template]').each(parseTemplates);
             el.find('[data-instance]').each(parseInstances);
 
