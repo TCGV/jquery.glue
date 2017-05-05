@@ -11,12 +11,14 @@
     var glueReadyListeners = [];
 
     addCss('[data-template] { display: none !important; }');
+    visibilityStyle = addCss('[data-show],[data-hide] { display: none !important; }');
 
     $(function () {
         jQueryReady = true;
         $('[data-template]').each(parseTemplates);
         $('[data-instance]').each(parseInstances);
         glueReadyEv();
+        visibilityStyle.remove();
     });
 
     $.fn.findBack = function (selector) {
@@ -29,8 +31,8 @@
 
             var wasReady = glueReady;
             glueReady = false;
-			
-			var p = $(this).parent();
+
+            var p = $(this).parent();
             var r = old.apply(this, arguments);
             var el = (v == 'after' || v == 'before' || v == 'replaceWith' ? p : $(this));
             el.find('[data-template]').each(parseTemplates);
@@ -229,6 +231,7 @@
 
     function bindVisibility(obj, i, el) {
 
+        $(el).hide();
         var prop = ($(el).attr('data-show') || $(el).attr('data-hide')).split('.');
         obj = getObject(obj, prop);
         prop = prop[prop.length - 1];
@@ -447,6 +450,7 @@
             styleElement.appendChild(document.createTextNode(cssCode));
         }
         document.getElementsByTagName("head")[0].appendChild(styleElement);
+        return styleElement;
     }
 
 }(jQuery));
