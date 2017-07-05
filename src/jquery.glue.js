@@ -18,7 +18,7 @@
         $('[data-template]').each(parseTemplates);
         $('[data-instance]').each(parseInstances);
         glueReadyEv();
-        visibilityStyle.remove();
+        visibilityStyle.parentNode.removeChild(visibilityStyle);
     });
 
     $.fn.findBack = function (selector) {
