@@ -396,10 +396,10 @@
                 el.value = val;
             }
         } else {
-			val = '' + val;
-			if (el.innerHTML != val) {
-				el.innerHTML = val;
-			}
+            val = '' + val;
+            if (el.innerHTML != val) {
+                el.innerHTML = val;
+            }
         }
     }
 
