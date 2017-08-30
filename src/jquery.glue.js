@@ -260,7 +260,7 @@
         var fullProp = $(el).attr(exp);
 
         bindObject(el, obj, exp, function (el) { getAttr(el, name); }, function (el, val) { setAttr(el, name, val); });
-        if (el.tagName == 'IMG') {
+        if (isImage(el)) {
             addEvent(el, 'load', load);
         }
 
@@ -395,8 +395,11 @@
             if (el.value != val) {
                 el.value = val;
             }
-        } else if (el.innerHTML != val) {
-            el.innerHTML = val;
+        } else {
+			val = '' + val;
+			if (el.innerHTML != val) {
+				el.innerHTML = val;
+			}
         }
     }
 
@@ -405,7 +408,9 @@
     }
 
     function setAttr(el, name, val) {
-        el.setAttribute(name, val);
+        if (!(isImage(el) && val == null && el.attributes[name] == null)) {
+            el.setAttribute(name, val);
+        }
     }
 
     function isRadio(el) {
@@ -414,6 +419,10 @@
 
     function isCheckbox(el) {
         return el.tagName == 'INPUT' && el.type == 'checkbox';
+    }
+
+    function isImage(el) {
+        return el.tagName == 'IMG';
     }
 
     // ES 15.2.3.6 Object.defineProperty ( O, P, Attributes )
