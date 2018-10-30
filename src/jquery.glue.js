@@ -231,7 +231,9 @@
 
     function bindVisibility(obj, i, el) {
 
-        $(el).hide();
+        if (!isDisplayNone(el))
+            el.style.display = 'none';
+
         var prop = ($(el).attr('data-show') || $(el).attr('data-hide')).split('.');
         obj = getObject(obj, prop);
         prop = prop[prop.length - 1];
@@ -244,9 +246,11 @@
                 set: function (val) {
                     v = val;
                     if ((val == false && $(el).is('[data-show]')) || (val == true && $(el).is('[data-hide]'))) {
-                        $(el).css('display', 'none');
+                        if (!isDisplayNone(el))
+                            el.style.display = 'none';
                     } else {
-                        $(el).css('display', '');
+                        if (isDisplayNone(el))
+                            el.style.display = '';
                     }
                 }
             });
@@ -396,10 +400,10 @@
                 el.value = val;
             }
         } else {
-			val = '' + val;
-			if (el.innerHTML != val) {
-				el.innerHTML = val;
-			}
+            val = '' + val;
+            if (el.innerHTML != val) {
+                el.innerHTML = val;
+            }
         }
     }
 
@@ -423,6 +427,10 @@
 
     function isImage(el) {
         return el.tagName == 'IMG';
+    }
+
+    function isDisplayNone(el) {
+        return el.style.display == 'none';
     }
 
     // ES 15.2.3.6 Object.defineProperty ( O, P, Attributes )
