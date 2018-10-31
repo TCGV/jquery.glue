@@ -100,7 +100,7 @@ Generates a jQuery object by cloning the view whose `data-template` attribute va
 - jQuery version 1.12.4 or higher required
 - Experimental plugin with support for modern browsers (Chrome/FireFox/Edge)
 
-##Licensing
+## Licensing
 
 This code is released under the MIT License:
 
